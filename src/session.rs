@@ -1,9 +1,6 @@
-use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 
 use async_trait::async_trait;
-use lazy_static::lazy_static;
-use regex::Regex;
 use reqwest::{
     cookie::{CookieStore, Jar},
     Client, ClientBuilder,
@@ -14,6 +11,7 @@ use crate::error::Result;
 #[cfg(feature = "webvpn")]
 use crate::platform::PLATFORM_WEBVPN;
 use crate::platform::{Platform, PLATFORM_CAS};
+use crate::status::UserStatus;
 
 #[sealed(pub(crate))]
 #[async_trait]
@@ -107,54 +105,6 @@ impl Session {
 
     pub async fn check_webvpn_passport_status(&self) -> Result<UserStatus> {
         self.check_status(&PLATFORM_WEBVPN).await
-    }
-}
-
-#[derive(Debug)]
-#[non_exhaustive]
-pub enum UserStatus {
-    Active { cookie: String, username: String },
-    NeedReset { cookie: String },
-    Banned { cookie: String },
-    Rejected,
-}
-
-impl Display for UserStatus {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            UserStatus::Active { username, .. } => write!(f, "active#{}", username),
-            UserStatus::NeedReset { .. } => write!(f, "need reset"),
-            UserStatus::Banned { .. } => write!(f, "banned"),
-            UserStatus::Rejected => write!(f, "rejected"),
-        }
-    }
-}
-
-impl UserStatus {
-    pub(crate) fn from_response_html(html: &str, cookie: Option<String>) -> UserStatus {
-        lazy_static! {
-            static ref TITLE_RE: Regex = Regex::new(r"<title>(.+?)</title>").unwrap();
-            static ref USERNAME_RE: Regex = Regex::new(r#"var id_number = "(.+?)""#).unwrap();
-        }
-
-        let title = TITLE_RE
-            .captures(html)
-            .and_then(|cap| cap.get(1).map(|s| s.as_str()));
-
-        let username = USERNAME_RE
-            .captures(html)
-            .and_then(|cap| cap.get(1).map(|s| s.as_str()))
-            .map(|s| s.to_owned())
-            .unwrap_or_else(|| "".to_owned());
-
-        let cookie = cookie.unwrap_or_else(|| "".into());
-
-        match title {
-            Some("智慧东大--统一身份认证") => UserStatus::Rejected,
-            Some("智慧东大") => UserStatus::NeedReset { cookie },
-            Some("系统提示") => UserStatus::Banned { cookie },
-            _ => UserStatus::Active { cookie, username },
-        }
     }
 }
 

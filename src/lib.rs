@@ -8,15 +8,15 @@ pub use reqwest;
 
 pub use self::error::*;
 pub use self::session::*;
-#[cfg(feature = "webvpn")]
-pub use self::webvpn::*;
+pub use self::status::*;
 
 mod platform;
 
 mod error;
 mod session;
+mod status;
 
 pub mod auth;
 
 #[cfg(feature = "webvpn")]
-mod webvpn;
+pub mod webvpn;

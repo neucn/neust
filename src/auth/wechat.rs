@@ -8,7 +8,8 @@ use sealed::sealed;
 
 use crate::error::Result;
 use crate::platform::Platform;
-use crate::session::{Session, UserStatus};
+use crate::session::Session;
+use crate::status::UserStatus;
 
 static WECHAT_AUTH_URL: &str = "https://pass.neu.edu.cn/tpass/qyQrLogin";
 

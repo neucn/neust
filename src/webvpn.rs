@@ -4,7 +4,7 @@ use aes::{
 };
 use cfb_mode::Encryptor;
 
-pub fn encrypt_webvpn_url(url: impl AsRef<str>) -> String {
+pub fn encrypt_url(url: impl AsRef<str>) -> String {
     let mut protocol = "http";
 
     let url = url.as_ref();
@@ -71,7 +71,7 @@ fn encrypt(plaintext: &[u8]) -> String {
 
 #[cfg(test)]
 mod tests {
-    use crate::webvpn::encrypt_webvpn_url;
+    use crate::webvpn::encrypt_url;
 
     #[test]
     fn test_encrypt_webvpn_url() {
@@ -85,7 +85,7 @@ mod tests {
         ];
 
         for (case, expected) in table {
-            assert_eq!(encrypt_webvpn_url(case), expected)
+            assert_eq!(encrypt_url(case), expected)
         }
     }
 }
