@@ -93,4 +93,5 @@ jobs:
       - uses: Swatinem/rust-cache@v1
       - uses: actions-rs/cargo@v1
         with:
-          command: check --features ${{ env.features }}
+          command: check
+          args: --features ${{ env.features }}
