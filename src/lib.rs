@@ -28,6 +28,7 @@
 //! Should enable feature: **webvpn**.
 //!
 //! ```no_run
+//! # #[cfg(feature = "webvpn")]
 //! # async fn doc() -> Result<(), neust::Error> {
 //! use neust::{Session, auth, webvpn};
 //!
@@ -53,6 +54,7 @@
 //! Should enable feature: **wechat**.
 //!
 //! ```no_run
+//! # #[cfg(feature = "wechat")]
 //! # async fn doc() -> Result<(), neust::Error> {
 //! use neust::{Session, auth};
 //! use tokio::time::{sleep, Duration};
