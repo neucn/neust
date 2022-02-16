@@ -79,6 +79,7 @@
 //! - **json**: Provides serialization and deserialization for JSON bodies.
 //!
 #![deny(missing_debug_implementations, unreachable_pub, missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub use reqwest;
 
