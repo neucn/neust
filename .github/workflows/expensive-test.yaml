@@ -16,6 +16,7 @@ jobs:
           toolchain: stable
           profile: minimal
           override: true
+      - uses: Swatinem/rust-cache@v1
       - uses: actions-rs/cargo@v1
         env:
           TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
