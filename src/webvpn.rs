@@ -1,18 +1,39 @@
+//! Provide helper functions for operations on WebVPN.
+
 use aes::{
     cipher::{AsyncStreamCipher, KeyIvInit},
     Aes128,
 };
 use cfb_mode::Encryptor;
 
+/// Encrypts a service url so that it can be accessed
+/// via [`WebVPNEndpoint`](crate::doc::endpoint).
+///
+/// # Note
+///
+/// The scheme of URL will be inferred according to the following rules:
+/// - if url starts with "https://" => https
+/// - if url starts with "http://" or "//" or without scheme => http
+///
+/// # Examples
+/// ```
+/// # async fn doc() {
+/// assert_eq!(
+///     neust::webvpn::encrypt_url("http://219.216.96.4/eams/homeExt.action"),
+///     "https://webvpn.neu.edu.cn/http/77726476706e69737468656265737421a2a618d275613e1e275ec7f8/eams/homeExt.action"
+/// )
+/// # }
+/// ```
+#[cfg_attr(docsrs, doc(cfg(feature = "webvpn")))]
 pub fn encrypt_url(url: impl AsRef<str>) -> String {
-    let mut protocol = "http";
+    let mut scheme = "http";
 
     let url = url.as_ref();
 
-    // get protocol and url
+    // get scheme and url
     let url = match url.strip_prefix("https://") {
         Some(u) => {
-            protocol = "https";
+            scheme = "https";
             u
         }
         None => url
@@ -53,9 +74,9 @@ pub fn encrypt_url(url: impl AsRef<str>) -> String {
     match port {
         Some(port) => format!(
             "https://webvpn.neu.edu.cn/{}-{}/{}",
-            protocol, port, encrypted_url
+            scheme, port, encrypted_url
         ),
-        None => format!("https://webvpn.neu.edu.cn/{}/{}", protocol, encrypted_url),
+        None => format!("https://webvpn.neu.edu.cn/{}/{}", scheme, encrypted_url),
     }
 }
 
