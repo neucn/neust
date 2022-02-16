@@ -28,6 +28,7 @@
 //! Should enable feature: **webvpn**.
 //!
 //! ```no_run
+//! # #[cfg(feature = "webvpn")]
 //! # async fn doc() -> Result<(), neust::Error> {
 //! use neust::{Session, auth, webvpn};
 //!
@@ -53,6 +54,7 @@
 //! Should enable feature: **wechat**.
 //!
 //! ```no_run
+//! # #[cfg(feature = "wechat")]
 //! # async fn doc() -> Result<(), neust::Error> {
 //! use neust::{Session, auth};
 //! use tokio::time::{sleep, Duration};
@@ -77,6 +79,7 @@
 //! - **json**: Provides serialization and deserialization for JSON bodies.
 //!
 #![deny(missing_debug_implementations, unreachable_pub, missing_docs)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
 
 pub use reqwest;
 
