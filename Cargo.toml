@@ -6,7 +6,7 @@ edition = "2021"
 readme = "README.md"
 homepage = "https://github.com/neucn/neust"
 repository = "https://github.com/neucn/neust.git"
-description = "NEU passport binding for Rust."
+description = "NEU CAS binding for Rust."
 license = "MIT"
 documentation = "https://docs.rs/neust"
 

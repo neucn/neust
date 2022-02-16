@@ -8,18 +8,16 @@ async fn main() {
         panic!("please provide username and password")
     }
 
-    let auth = Credential::new(&args[1], &args[2]);
+    let credential = Credential::new(&args[1], &args[2]);
 
     let session = Session::new();
 
-    // login cas passport first
-    let status = session.login_cas_passport(&auth).await.unwrap();
+    let status = session.login(&credential).await.unwrap();
     if !status.is_active() {
         panic!("error: {:?}", status)
     }
 
-    // login webvpn passport then
-    let status = session.login_webvpn_passport(&auth).await.unwrap();
+    let status = session.login_via_webvpn(&credential).await.unwrap();
     if !status.is_active() {
         panic!("error: {:?}", status)
     }
