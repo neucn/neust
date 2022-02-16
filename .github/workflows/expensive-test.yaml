@@ -1,0 +1,25 @@
+name: Expensive Test
+on:
+  workflow_dispatch:
+
+env:
+  RUST_BACKTRACE: 1
+  features: webvpn,wechat
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+      - uses: actions-rs/cargo@v1
+        env:
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        with:
+          command: test
+          args: --features ${{ env.features }} -- --ignored

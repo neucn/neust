@@ -153,8 +153,8 @@ mod tests {
 
     #[test]
     fn test_wechat_cmp() {
-        let uuid_a= "a";
-        let uuid_b= "b";
+        let uuid_a = "a";
+        let uuid_b = "b";
         let wechat_a = Wechat::new(Some(uuid_a.to_owned()));
         let wechat_b = Wechat::new(Some(uuid_b.to_owned()));
         let wechat_c = Wechat::new(Some(uuid_a.to_owned()));

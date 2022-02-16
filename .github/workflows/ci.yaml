@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+env:
+  RUST_BACKTRACE: 1
+  rust_min_version: 1.56.0
+  features: webvpn,wechat
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          components: rustfmt, clippy
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: -- --check
+      - uses: actions-rs/cargo@v1
+        with:
+          command: clippy
+          args: --features ${{ env.features }}
+
+  local-test:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    strategy:
+      matrix:
+        name:
+          - "feat: webvpn"
+          - "feat: wechat"
+          - "feat: webvpn,wechat"
+        include:
+          - name: "feat: webvpn"
+            features: "webvpn"
+          - name: "feat: wechat"
+            features: "wechat"
+          - name: "feat: webvpn,wechat"
+            features: "webvpn,wechat"
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --features ${{ matrix.features }}
+
+  docs:
+    runs-on: ubuntu-latest
+    needs: [ lint ]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          override: true
+      - uses: actions-rs/cargo@v1
+        env:
+          RUSTFLAGS: --cfg docsrs
+          RUSTDOCFLAGS: --cfg docsrs -Dwarnings
+        with:
+          command: doc
+          args: --no-deps --document-private-items --features ${{ env.features }}
+
+  min-version:
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ env.rust_min_version }}
+          profile: minimal
+          override: true
+      - uses: Swatinem/rust-cache@v1
+      - uses: actions-rs/cargo@v1
+        with:
+          command: check --features ${{ env.features }}
