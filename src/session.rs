@@ -4,9 +4,10 @@ use std::sync::Arc;
 use async_trait::async_trait;
 use lazy_static::lazy_static;
 use regex::Regex;
-use reqwest::cookie::CookieStore;
-use reqwest::Client;
-use reqwest::{cookie::Jar, ClientBuilder};
+use reqwest::{
+    cookie::{CookieStore, Jar},
+    Client, ClientBuilder,
+};
 use sealed::sealed;
 
 use crate::error::Result;
@@ -36,6 +37,12 @@ impl Session {
     }
 }
 
+impl AsRef<Client> for Session {
+    fn as_ref(&self) -> &Client {
+        &self.client
+    }
+}
+
 impl Default for Session {
     fn default() -> Self {
         Session::with_client_builder(|b| b)
@@ -57,11 +64,10 @@ impl Session {
 
         let cookie_jar = Arc::new(Jar::default());
 
-        let client = build(ClientBuilder::new())
-            .user_agent(UA)
+        let client = build(ClientBuilder::new().user_agent(UA))
             .cookie_provider(cookie_jar.clone())
             .build()
-            .unwrap();
+            .expect("cannot initialize TLS backend, or cannot load the system configuration");
 
         Session { client, cookie_jar }
     }
@@ -107,16 +113,9 @@ impl Session {
 #[derive(Debug)]
 #[non_exhaustive]
 pub enum UserStatus {
-    Active {
-        cookie: String,
-        username: String,
-    },
-    NeedReset {
-        cookie: String,
-    },
-    Banned {
-        cookie: String,
-    },
+    Active { cookie: String, username: String },
+    NeedReset { cookie: String },
+    Banned { cookie: String },
     Rejected,
 }
 
@@ -181,7 +180,7 @@ mod tests {
     fn test_find_cookie_value() {
         let table = vec![
             ("refresh=1; wengine_vpn_ticketwebvpn_neu_edu_cn=3c2cca8a854e8122", "wengine_vpn_ticketwebvpn_neu_edu_cn", Some("3c2cca8a854e8122".to_owned())),
-            ("CASTGC=TGT-20180000-1827000-izbHeCI9y53RyIpMoYKxKbdyjtkgmfOy0NwbJHHiwXQabRYYKK-tpass; Language=zh_CN; jsessionid_tpass=ZLr9vBLe0xcX0nPsDfv3WASFiziyH-sMuy4CDoiIcqJkASjw136y!-1701433832", "CASTGC",Some( "TGT-20180000-1827000-izbHeCI9y53RyIpMoYKxKbdyjtkgmfOy0NwbJHHiwXQabRYYKK-tpass".to_owned())),
+            ("CASTGC=TGT-20180000-1827000-izbHeCI9y53RyIpMoYKxKbdyjtkgmfOy0NwbJHHiwXQabRYYKK-tpass; Language=zh_CN; jsessionid_tpass=ZLr9vBLe0xcX0nPsDfv3WASFiziyH-sMuy4CDoiIcqJkASjw136y!-1701433832", "CASTGC", Some("TGT-20180000-1827000-izbHeCI9y53RyIpMoYKxKbdyjtkgmfOy0NwbJHHiwXQabRYYKK-tpass".to_owned())),
             ("CASTGC=TGT-20180000-1827000-izbHeCI9y53RyIpMoYKxKbdyjtkgmfOy0NwbJHHiwXQabRYYKK-tpass; Language=zh_CN; jsessionid_tpass=ZLr9vBLe0xcX0nPsDfv3WASFiziyH-sMuy4CDoiIcqJkASjw136y!-1701433832", "jsessionid_tpass", Some("ZLr9vBLe0xcX0nPsDfv3WASFiziyH-sMuy4CDoiIcqJkASjw136y!-1701433832".to_owned())),
             ("", "wengine_vpn_ticketwebvpn_neu_edu_cn", None),
         ];

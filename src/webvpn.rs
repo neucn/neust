@@ -1,5 +1,7 @@
-use aes::cipher::{AsyncStreamCipher, KeyIvInit};
-use aes::Aes128;
+use aes::{
+    cipher::{AsyncStreamCipher, KeyIvInit},
+    Aes128,
+};
 use cfb_mode::Encryptor;
 
 pub fn encrypt_webvpn_url(url: impl AsRef<str>) -> String {

@@ -8,8 +8,9 @@ use sealed::sealed;
 
 use crate::error::Result;
 use crate::platform::Platform;
-use crate::platform::WECHAT_AUTH_URL;
 use crate::session::{Session, UserStatus};
+
+static WECHAT_AUTH_URL: &str = "https://pass.neu.edu.cn/tpass/qyQrLogin";
 
 #[derive(Debug, Clone)]
 pub struct Wechat {
@@ -81,7 +82,7 @@ fn generate_uuid() -> String {
 
     let mut rand_gen = rand::thread_rng();
 
-    let mut uuid = String::new();
+    let mut uuid = String::with_capacity(36);
 
     for i in 0..36 {
         uuid.push(match i {
@@ -89,11 +90,7 @@ fn generate_uuid() -> String {
             _ => {
                 let r = (d + rand_gen.gen::<f64>() * 16f64) as usize % 16;
                 d = (d / 16f64).floor();
-                match i {
-                    14 => '4',
-                    19 => HEX[(r & 0x3 | 0x8)],
-                    _ => HEX[r],
-                }
+                HEX[r]
             }
         });
     }

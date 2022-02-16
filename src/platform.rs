@@ -27,6 +27,3 @@ lazy_static! {
         cookie_url: Url::parse("https://webvpn.neu.edu.cn/").unwrap(),
     };
 }
-
-#[cfg(feature = "wechat")]
-pub static WECHAT_AUTH_URL: &str = "https://pass.neu.edu.cn/tpass/qyQrLogin";
