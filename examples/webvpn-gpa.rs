@@ -1,3 +1,5 @@
+//! This example requires feature **neust/webvpn**
+
 use neust::{auth::Credential, webvpn, Session};
 use std::env;
 

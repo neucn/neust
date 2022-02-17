@@ -13,6 +13,7 @@ documentation = "https://docs.rs/neust"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
+rustdoc-args = ["--cfg", "docsrs"]
 all-features = true
 
 [dependencies]
@@ -31,7 +32,7 @@ hex = { version = "0.4", optional = true }
 rand = { version = "0.8", optional = true }
 
 [dev-dependencies]
-tokio = { version = "1.16", default-features = false, features = ["macros"] }
+tokio = { version = "1.16", default-features = false, features = ["macros", "rt-multi-thread"] }
 
 [features]
 default = ["native-tls"]
@@ -41,3 +42,12 @@ json = ["reqwest/json"]
 wechat = ["rand"]
 webvpn = ["aes", "cfb-mode", "hex"]
 
+[[example]]
+name = "wechat"
+path = "examples/wechat.rs"
+required-features = ["wechat"]
+
+[[example]]
+name = "webvpn-gpa"
+path = "examples/webvpn-gpa.rs"
+required-features = ["webvpn"]

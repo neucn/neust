@@ -1,3 +1,5 @@
+//! This example requires feature **neust/wechat**
+
 use neust::{auth::Wechat, Session, UserStatus};
 use tokio::time::{interval, timeout, Duration};
 
