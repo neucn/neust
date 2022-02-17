@@ -26,6 +26,6 @@ async fn main() {
             }
         }
     })
-        .await
-        .unwrap();
+    .await
+    .unwrap();
 }
