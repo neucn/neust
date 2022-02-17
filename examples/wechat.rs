@@ -1,3 +1,5 @@
+//! This example requires feature **neust/wechat**
+
 use neust::{auth::Wechat, Session, UserStatus};
 use tokio::time::{interval, timeout, Duration};
 
@@ -24,6 +26,6 @@ async fn main() {
             }
         }
     })
-    .await
-    .unwrap();
+        .await
+        .unwrap();
 }

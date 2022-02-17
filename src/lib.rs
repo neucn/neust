@@ -7,7 +7,7 @@
 //!
 //! ## Examples
 //!
-//! For complete binary program examples, see
+//! For binary program examples, see
 //! [neust/examples](https://github.com/neucn/neust/tree/master/examples).
 //!
 //! ### Query username using token
